@@ -1,3 +1,9 @@
 database:
   override:
     - createdb -O ubuntu express_tdd_testing
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: fuzzy-red-express-tdd
