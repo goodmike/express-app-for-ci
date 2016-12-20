@@ -4,19 +4,19 @@ Driver app for running integrations with CicleCI and heroku.
 
 ## Step 1: Rough out an express app.
 
-I followed an in-depth [blog post](http://mherman.org/blog/2016/09/12/testing-node-and-express/#.WFbM9ZIjZA9) 
+I followed an in-depth [blog post](http://mherman.org/blog/2016/09/12/testing-node-and-express/#.WFbM9ZIjZA9)
 to implement part of a CRUD API with integration and unit tests.
 
 * Generate app with galvanaize-express yeoman generator.
 * Setup dev and test databases in postgresql.
 * Use [knex query builder](http://knexjs.org/) for DB interaction.
- 
+
 ### Notes:
- 
-Since the goal of this toy app is to run in `production` mode at 
-heroku, be sure to npm install `knex` and `pg` as project dependencies, 
+
+Since the goal of this toy app is to run in `production` mode at
+heroku, be sure to npm install `knex` and `pg` as project dependencies,
 not just dev-dependencies:
- 
+
  ```
  npm install knex@0.11.10 pg@6.1.0 --save
 ```
@@ -28,16 +28,16 @@ not just dev-dependencies:
  ```
  require('dotenv').config();
  ```
-Trying to require the contents of an `.env` file on heroku, where it 
+Trying to require the contents of an `.env` file on heroku, where it
 doesn't exist, only causes problems later on.
- 
+
 ## Step 2: Deploy to CircleCI
 
-Integrate github with CircleCI so that pushing to github triggers a 
+Integrate github with CircleCI so that pushing to github triggers a
 build on CircleCI.
 
 * Follow the service integration instructions on CircleCI's website.
-* Create and commit a `circle,yml` file in the root of the project 
+* Create and commit a `circle,yml` file in the root of the project
 directory. In the file, specify the creation of the postgresql database:
 ```
 database:
@@ -55,7 +55,7 @@ Make the app work when pushed to heroku.
 ```
 web: node ./src/server/server
 ```
-* Add a configuration object for a `production` environment to 
+* Add a configuration object for a `production` environment to
 `knexfile.js`:
 ```
  production: {
@@ -80,12 +80,12 @@ heroku run knex seed:run
 ### Notes:
 
 Once upon a time knex had trouble working on heroku because it wouldn't
-make database connections over SSL. That's resolved, so all we have to 
-do is add ` + '?ssl=true'` to the proction `connection` value in 
+make database connections over SSL. That's resolved, so all we have to
+do is add ` + '?ssl=true'` to the proction `connection` value in
 `knexfile.js`.
 
 ## Step 4: Set up CircleCI to deploy successful build to heroku
- 
+
 Show me the continuous delivery!
 
 * Follow instructions at CircleCI to integrate with a heroku account.
@@ -100,3 +100,10 @@ deployment:
 
 Confirm everything works by pushing to github. The app should build in
 CircleCI and then deploy to heroku, where it should be up and running.
+
+## To Do
+
+* Implement more of the CRUD app, with tests.
+* Collect test metadata on CircleCI with a
+[custom XML reporter](https://circleci.com/docs/test-metadata/#mochajs)
+using [mocha-junit-reporter](https://www.npmjs.com/package/mocha-junit-reporter).
